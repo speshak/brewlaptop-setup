@@ -1,0 +1,91 @@
+---
+- hosts: all
+  become: true
+
+  vars:
+    brew_user: brew
+
+  tasks:
+    - name: Install SSH key for brew user
+      authorized_key:
+        key=https://github.com/speshak.keys
+        user={{brew_user}}
+
+    - name: Config Postgres repo
+      shell: echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+        creates=/etc/apt/sources.list.d/pgdg.list
+      tags:
+        - install
+        - packages
+
+    - name: Install Postgres apt key
+      apt_key:
+        url=https://www.postgresql.org/media/keys/ACCC4CF8.asc
+        state=present
+      tags:
+        - install
+        - packages
+
+    - name: Install packages
+      apt:
+        name={{item}}
+        state=present
+        update_cache=yes
+      with_items:
+        - build-essential
+        - cmake
+        - qt5-default
+        - libqt5sql5-psql
+        - libqt5svg5-dev
+        - libqt5webkit5-dev
+        - libqt5multimedia5
+        - qtmultimedia5-dev
+        - qttools5-dev
+        - qttools5-dev-tools
+        - postgresql-9.5
+        - python-psycopg2
+        - vim
+        - git
+      tags:
+        - install
+        - packages
+
+    - name: Pull in dotfiles
+      git:
+        repo=https://github.com/speshak/dotfiles.git
+        dest=/home/{{brew_user}}/.dotfiles
+      tags:
+        - install
+        - dotfiles
+
+    - name: Install dotfiles
+      command: /home/{{brew_user}}/.dotfiles/script/bootstrap
+      tags:
+        - install
+        - dotfiles
+
+
+    - name: Clone brewtarget dev repo
+      git:
+        repo=https://github.com/Brewtarget/brewtarget
+        dest=/home/{{brew_user}}/brewtarget
+      tags:
+        - brewtarget
+
+    - name: Configure brewtarget build
+      command: /home/{{brew_user}}/brewtarget/configure
+        chdir=/home/{{brew_user}}/brewtarget
+        creates=/home/{{brew_user}}/brewtarget/build/Makefile
+      tags:
+        - brewtarget
+
+    - name: Build brewtarget
+      command: make install
+        chdir=/home/{{brew_user}}/brewtarget/build/
+        creates=/home/{{brew_user}}/brewtarget/build/src/brewtarget
+      tags:
+        - brewtarget
+
+
+      #TODO: install a config file for brewtarget
+# vim: ft=ansible
