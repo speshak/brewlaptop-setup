@@ -39,6 +39,7 @@
         - libqt5svg5-dev
         - libqt5webkit5-dev
         - libqt5multimedia5
+        - libqt5multimedia5-plugins
         - qtmultimedia5-dev
         - qttools5-dev
         - qttools5-dev-tools
