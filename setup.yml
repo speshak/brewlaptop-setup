@@ -47,6 +47,7 @@
         - python-psycopg2
         - vim
         - git
+        - autofs
       tags:
         - install
         - packages
@@ -99,6 +100,21 @@
       tags:
         - brewtarget
 
+    - name: Configure autofs.master
+      lineinfile:
+        line="/net -hosts nosuid"
+        dest=/etc/auto.master
+        state=present
+      notify: restart autofs
+      tags:
+        - autofs
 
       #TODO: install a config file for brewtarget
+
+
+  handlers:
+    - name: restart autofs
+      service:
+        name: autofs
+        state: restarted
 # vim: ft=ansible
