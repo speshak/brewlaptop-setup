@@ -55,12 +55,14 @@
       git:
         repo=https://github.com/speshak/dotfiles.git
         dest=/home/{{brew_user}}/.dotfiles
+      become: false
       tags:
         - install
         - dotfiles
 
     - name: Install dotfiles
       command: /home/{{brew_user}}/.dotfiles/script/bootstrap
+      become: false
       tags:
         - install
         - dotfiles
@@ -70,6 +72,7 @@
       git:
         repo=https://github.com/Brewtarget/brewtarget
         dest=/home/{{brew_user}}/brewtarget
+      become: false
       tags:
         - brewtarget
 
@@ -77,10 +80,19 @@
       command: /home/{{brew_user}}/brewtarget/configure
         chdir=/home/{{brew_user}}/brewtarget
         creates=/home/{{brew_user}}/brewtarget/build/Makefile
+      become: false
       tags:
         - brewtarget
 
     - name: Build brewtarget
+      command: make
+        chdir=/home/{{brew_user}}/brewtarget/build/
+        creates=/home/{{brew_user}}/brewtarget/build/src/brewtarget
+      become: false
+      tags:
+        - brewtarget
+
+    - name: Install brewtarget
       command: make install
         chdir=/home/{{brew_user}}/brewtarget/build/
         creates=/home/{{brew_user}}/brewtarget/build/src/brewtarget
