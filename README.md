@@ -7,3 +7,9 @@ I use [brewtarget](https://github.com/Brewtarget/brewtarget) while making homebr
 safe having next to fire & water when I've been drinking.  This project defines
 how that laptop was set up.  This assumes we're starting with a base install of
 Ubuntu 15.10.  `openssh-server` will have to be installed manually if this is to be run remotely.
+
+
+Running
+=======
+
+    ansible-playbook -i hosts setup.yml
