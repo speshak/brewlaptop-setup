@@ -96,6 +96,23 @@
 
       #TODO: install a config file for brewtarget
 
+    - name: Install BeerSmith prereqs
+      apt:
+        name={{item}}
+        state=present
+        update_cache=yes
+      with_items:
+        - libwebkitgtk-1.0-0
+      tags:
+        - beersmith
+
+
+    - name: Install BeerSmith
+      apt:
+        deb=https://s3.amazonaws.com/beersmith2-3/BeerSmith-2.3.12_amd64.deb
+      tags:
+        - beersmith
+
 
   handlers:
     - name: restart autofs
