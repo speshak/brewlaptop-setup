@@ -11,21 +11,6 @@
         key=https://github.com/speshak.keys
         user={{brew_user}}
 
-    - name: Config Postgres repo
-      shell: echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
-        creates=/etc/apt/sources.list.d/pgdg.list
-      tags:
-        - install
-        - packages
-
-    - name: Install Postgres apt key
-      apt_key:
-        url=https://www.postgresql.org/media/keys/ACCC4CF8.asc
-        state=present
-      tags:
-        - install
-        - packages
-
     - name: Install packages
       apt:
         name={{item}}
